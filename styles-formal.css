@@ -141,7 +141,6 @@ body {
   border-radius: 2px;
 }
 
-/* Portfolio Grid con Carrusel */
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -403,7 +402,6 @@ body {
   color: #6b7280;
 }
 
-/* Botón cambiador de tema - estilo neutral y sutil */
 .theme-switcher {
   position: fixed;
   bottom: 20px;

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Animación de cards en la página principal
+  // Animación de cards página principal
   const cards = document.querySelectorAll('.card');
 
   const observer = new IntersectionObserver((entries) => {
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   cards.forEach(card => observer.observe(card));
 
-  // Funcionalidad del Modal Portfolio
+  // Modal Portfolio
   const modal = document.getElementById('portfolio-modal');
   const openBtn = document.getElementById('open-portfolio');
   const closeBtn = document.querySelector('.close');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   openBtn.onclick = () => {
     modal.style.display = 'flex';
 
-    // Animar las cards del portfolio al abrir el modal
+    // cards del portfolio al abrir el modal
     const portfolioCards = document.querySelectorAll('.portfolio-card');
     portfolioCards.forEach((card, index) => {
       card.style.opacity = 0;
@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.style.display = 'none';
   };
 
-  // Cerrar al hacer click fuera del contenido
   window.onclick = (event) => {
     if (event.target === modal) {
       modal.style.display = 'none';
@@ -88,11 +87,9 @@ document.querySelectorAll('.image-carousel').forEach(carousel => {
   prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
   nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
 
-  // Opcional: auto-play lento
   // setInterval(() => goToSlide(currentIndex + 1), 5000);
 });
 
-// Cambiador de temas
 document.addEventListener('DOMContentLoaded', () => {
   const themeLinks = {
     kawaii: document.getElementById('theme-kawaii'),
@@ -105,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeSwitcher = document.getElementById('theme-switcher');
   const menuButtons = themeMenu.querySelectorAll('button');
 
-  // Cargar tema guardado o usar cyberpunk por defecto
+  // Cargar tema guardado
   const savedTheme = localStorage.getItem('selectedTheme') || 'cyberpunk';
   activateTheme(savedTheme);
 
@@ -115,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     themeSwitcher.classList.toggle('open');
   });
 
-  // Click en opción
   menuButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const theme = btn.getAttribute('data-theme');
@@ -124,24 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Cerrar al click fuera
   document.addEventListener('click', () => {
     themeSwitcher.classList.remove('open');
   });
 
   function activateTheme(theme) {
-    // Desactivar todos
     Object.values(themeLinks).forEach(link => link.disabled = true);
-    // Activar seleccionado
     themeLinks[theme].disabled = false;
 
-    // Marcar botón activo
     menuButtons.forEach(b => b.classList.remove('active'));
     document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
 
-    // Guardar preferencia
     localStorage.setItem('selectedTheme', theme);
   }
 
-  // Código existente del modal y carrusel aquí...
 });

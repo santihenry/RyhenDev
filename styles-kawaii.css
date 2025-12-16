@@ -145,7 +145,6 @@ body {
   border-radius: 3px;
 }
 
-/* Portfolio Grid con Carrusel */
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -168,7 +167,6 @@ body {
   border-color: #e59be9;
 }
 
-/* Carrusel de imágenes */
 .image-carousel {
   position: relative;
   overflow: hidden;
@@ -398,7 +396,6 @@ body {
   color: #9ca3af;
 }
 
-/* Botón cambiador de tema - estilo neutral y sutil */
 .theme-switcher {
   position: fixed;
   bottom: 20px;
