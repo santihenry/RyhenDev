@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Santiago Henry | Game Developer</title>
 
-  <link rel="stylesheet" href="styles.css" />
+  <link id="theme-kawaii" rel="stylesheet" href="styles-kawaii.css" disabled>
+  <link id="theme-formal" rel="stylesheet" href="styles-formal.css" disabled>
+  <link id="theme-cyberpunk" rel="stylesheet" href="styles-Cyberpunk.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -276,6 +278,16 @@
     <p class="signature">Santiago Henry · Game Developer</p>
   </div>
 </footer>
+
+<!-- Botón cambiador de tema -->
+<div id="theme-switcher" class="theme-switcher">
+  <button id="theme-button" class="theme-button" title="Cambiar tema">⚙️</button>
+  <div id="theme-menu" class="theme-menu">
+    <button data-theme="kawaii">Pastel Kawaii 🌸</button>
+    <button data-theme="formal">Formal Profesional 💼</button>
+    <button data-theme="cyberpunk">Cyberpunk Neon ⚡</button>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

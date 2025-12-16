@@ -91,3 +91,57 @@ document.querySelectorAll('.image-carousel').forEach(carousel => {
   // Opcional: auto-play lento
   // setInterval(() => goToSlide(currentIndex + 1), 5000);
 });
+
+// Cambiador de temas
+document.addEventListener('DOMContentLoaded', () => {
+  const themeLinks = {
+    kawaii: document.getElementById('theme-kawaii'),
+    formal: document.getElementById('theme-formal'),
+    cyberpunk: document.getElementById('theme-cyberpunk')
+  };
+
+  const themeButton = document.getElementById('theme-button');
+  const themeMenu = document.getElementById('theme-menu');
+  const themeSwitcher = document.getElementById('theme-switcher');
+  const menuButtons = themeMenu.querySelectorAll('button');
+
+  // Cargar tema guardado o usar cyberpunk por defecto
+  const savedTheme = localStorage.getItem('selectedTheme') || 'cyberpunk';
+  activateTheme(savedTheme);
+
+  // Toggle menú
+  themeButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeSwitcher.classList.toggle('open');
+  });
+
+  // Click en opción
+  menuButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.getAttribute('data-theme');
+      activateTheme(theme);
+      themeSwitcher.classList.remove('open');
+    });
+  });
+
+  // Cerrar al click fuera
+  document.addEventListener('click', () => {
+    themeSwitcher.classList.remove('open');
+  });
+
+  function activateTheme(theme) {
+    // Desactivar todos
+    Object.values(themeLinks).forEach(link => link.disabled = true);
+    // Activar seleccionado
+    themeLinks[theme].disabled = false;
+
+    // Marcar botón activo
+    menuButtons.forEach(b => b.classList.remove('active'));
+    document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+
+    // Guardar preferencia
+    localStorage.setItem('selectedTheme', theme);
+  }
+
+  // Código existente del modal y carrusel aquí...
+});
