@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   openBtn.onclick = () => {
     modal.style.display = 'flex';
 
-    // cards del portfolio al abrir el modal
+    // Animación de entrada de las cards del portfolio
     const portfolioCards = document.querySelectorAll('.portfolio-card');
     portfolioCards.forEach((card, index) => {
       card.style.opacity = 0;
@@ -87,9 +87,11 @@ document.querySelectorAll('.image-carousel').forEach(carousel => {
   prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
   nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
 
+  // Auto-avance opcional (descomentá si querés que cambie solo)
   // setInterval(() => goToSlide(currentIndex + 1), 5000);
 });
 
+// Theme Switcher - CORREGIDO para móviles
 document.addEventListener('DOMContentLoaded', () => {
   const themeLinks = {
     kawaii: document.getElementById('theme-kawaii'),
@@ -106,32 +108,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('selectedTheme') || 'cyberpunk';
   activateTheme(savedTheme);
 
-  // Toggle menú
+  // Abrir/cerrar menú al tocar el botón
   themeButton.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Evita propagación inmediata
     themeSwitcher.classList.toggle('open');
   });
 
+  // Seleccionar tema
   menuButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Evita que se cierre al tocar una opción
       const theme = btn.getAttribute('data-theme');
       activateTheme(theme);
       themeSwitcher.classList.remove('open');
     });
   });
 
-  document.addEventListener('click', () => {
-    themeSwitcher.classList.remove('open');
+  // Cerrar menú solo si se toca fuera del switcher
+  document.addEventListener('click', (e) => {
+    if (!themeSwitcher.contains(e.target)) {
+      themeSwitcher.classList.remove('open');
+    }
   });
 
+  // Función para activar el tema seleccionado
   function activateTheme(theme) {
+    // Desactivar todos los temas
     Object.values(themeLinks).forEach(link => link.disabled = true);
+    // Activar el seleccionado
     themeLinks[theme].disabled = false;
 
+    // Actualizar botón activo visualmente
     menuButtons.forEach(b => b.classList.remove('active'));
     document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
 
+    // Guardar en localStorage
     localStorage.setItem('selectedTheme', theme);
   }
-
 });
