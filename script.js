@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeLinks = {
     kawaii: document.getElementById('theme-kawaii'),
     formal: document.getElementById('theme-formal'),
-    cyberpunk: document.getElementById('theme-cyberpunk')
+    cyberpunk: document.getElementById('theme-cyberpunk'),
+    dark: document.getElementById('theme-dark')
   };
 
   const themeButton = document.getElementById('theme-button');
