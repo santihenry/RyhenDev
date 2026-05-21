@@ -1,3 +1,6 @@
+// 1. IMPORTAMOS EL SDK OFICIAL DE GEMINI (ES6 Modules)
+import { GoogleGenAI } from "https://esm.run";
+
 let player = {};
 let gameHistory = [];
 let speechEnabled = true;
@@ -7,7 +10,7 @@ const SYSTEM_PROMPT = `Eres un Dungeon Master experto. Narra de forma inmersiva,
 Evalúa las acciones del jugador según el resultado del dado D20 que se te proporciona. 
 Si el resultado es bajo (menos de 8), describe un fallo o complicación; si es alto (15-20), describe un éxito rotundo.
 
-IMPORTANTE: Debes responder ÚNICAMENTE con un objeto JSON válido que tenga esta estructura exacta, sin texto extra antes o después:
+IMPORTANTE: Debes responder ÚNICAMENTE con un objeto JSON válido que tenga esta estructura exacta, sin bloques de código markdown:
 {
   "narrativa": "Tu narración de máximo 2 párrafos aquí.",
   "cambioHp": 0,
@@ -23,7 +26,7 @@ async function callGemini(prompt, textoOriginalJugador) {
     return null;
   }
 
-  // Estructura de mensajes limpia y estándar para la API de Gemini
+  // Estructura de mensajes para el SDK oficial
   let contents = [
     { 
       role: "user", 
@@ -35,7 +38,6 @@ async function callGemini(prompt, textoOriginalJugador) {
     }
   ];
 
-  // Acumular historial
   gameHistory.forEach(msg => {
     contents.push({
       role: msg.role === "user" ? "user" : "model",
@@ -43,44 +45,26 @@ async function callGemini(prompt, textoOriginalJugador) {
     });
   });
 
-  // Agregar turno actual
   contents.push({ role: "user", parts: [{ text: prompt }] });
 
   try {
-    const url = `https://googleapis.com{apiKey}`;
+    // Inicializamos el cliente usando la librería oficial conectada a tu API Key gratuita
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 
-        contents: contents,
-        generationConfig: { 
-          temperature: 0.75,
-          responseMimeType: "application/json" // Forzamos a la API a devolver JSON nativo para evitar fallos
-        }
-      })
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: contents,
+      config: {
+        temperature: 0.75,
+        responseMimeType: "application/json" // Forzamos formato JSON nativo desde los servidores de Google
+      }
     });
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      const msgError = errorData.error?.message || "Causa desconocida";
-      throw new Error(`HTTP ${res.status} - ${msgError}`);
-    }
-
-    const data = await res.json();
-    
-    // Verificación segura de la respuesta de texto
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0]) {
-      throw new Error("La API no devolvió texto ejecutable.");
-    }
-
-    const rawText = data.candidates[0].content.parts[0].text.trim();
+    const rawText = response.text.trim();
     const jsonResponse = JSON.parse(rawText);
     let reply = (jsonResponse.narrativa || "").replace(/^(Master:|El Master:)\s*/i, '').trim();
 
-    // Gestión del estado del personaje
+    // Gestión automática del estado del personaje en memoria
     player.hp = Math.max(0, Math.min(player.maxHp, player.hp + (jsonResponse.cambioHp || 0)));
     player.gold = Math.max(0, player.gold + (jsonResponse.oroModificado || 0));
     
@@ -91,7 +75,7 @@ async function callGemini(prompt, textoOriginalJugador) {
       player.inventory = player.inventory.filter(item => !jsonResponse.itemsPerdidos.includes(item));
     }
 
-    // Guardar en historial de chat
+    // Persistencia del hilo argumental
     gameHistory.push({ role: "user", content: textoOriginalJugador });
     gameHistory.push({ role: "assistant", content: reply });
     if (gameHistory.length > 20) gameHistory.splice(0, 2);
@@ -102,7 +86,7 @@ async function callGemini(prompt, textoOriginalJugador) {
     return reply;
 
   } catch (e) {
-    console.error("Detalles del error:", e);
+    console.error("Detalles del error de la API:", e);
     return `<span style="color:#f87171;">Fallo del sistema: ${e.message}</span>`;
   }
 }
@@ -136,8 +120,9 @@ function createConfigScreen() {
       <option>Épico</option>
     </select>
 
-    <button onclick="startAdventure()" class="start-btn">🚀 Comenzar Aventura</button>
+    <button id="start-adventure-btn" class="start-btn">🚀 Comenzar Aventura</button>
   `;
+  document.getElementById("start-adventure-btn").onclick = startAdventure;
 }
 
 function startAdventure() {
@@ -213,19 +198,22 @@ async function sendAction() {
   }
 }
 
-function quickAction(action) {
+// Mapeos al objeto Window requeridos debido al entorno aislado del módulo ES6
+window.quickAction = function(action) {
   document.getElementById("action-input").value = action;
   sendAction();
-}
+};
 
-function toggleSpeech() {
+window.toggleSpeech = function() {
   speechEnabled = !speechEnabled;
   const btn = document.getElementById("speech-btn");
   btn.textContent = speechEnabled ? "🔊 Voz Activada" : "🔇 Voz Desactivada";
-}
+};
 
-function resetAll() {
+window.resetAll = function() {
   if (confirm("¿Empezar una nueva aventura?")) location.reload();
-}
+};
+
+window.sendAction = sendAction;
 
 window.onload = createConfigScreen;
